@@ -18,8 +18,9 @@ apply plugin: 'maven-publish'
 
 task sourceJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
-    archiveClassifier.set("sources") // 使用 archiveClassifier 替代 classifier
+    archiveClassifier.set("sources")
 }
+
 publishing {
     publications {
         okdownload(MavenPublication) {
@@ -31,7 +32,7 @@ publishing {
 
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
-                configurations.compile.allDependencies.each {
+                configurations.implementation.allDependencies.each { // 替换 compile 为 implementation
                     if (it.group != null
                             && (it.name != null || "unspecified" == it.name)
                             && it.version != null) {
