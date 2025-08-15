@@ -22,8 +22,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+
 import android.view.View;
 import android.widget.TextView;
 
@@ -47,11 +49,13 @@ public class NotificationActivity extends BaseSampleActivity {
     private TextView actionTv;
     private View actionView;
 
-    @Override public int titleRes() {
+    @Override
+    public int titleRes() {
         return R.string.title_notification;
     }
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
         actionTv = findViewById(R.id.actionTv);
@@ -74,7 +78,8 @@ public class NotificationActivity extends BaseSampleActivity {
         }
     }
 
-    @Override protected void onDestroy() {
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(cancelReceiver);
         listener.releaseTaskEndRunnable();
@@ -83,7 +88,8 @@ public class NotificationActivity extends BaseSampleActivity {
     private void initAction() {
         actionTv.setText(R.string.start);
         actionView.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 if (v.getTag() == null) {
                     // need to start
                     GlobalTaskManager.getImpl().enqueueTask(task, listener);
@@ -116,7 +122,8 @@ public class NotificationActivity extends BaseSampleActivity {
     private void initListener() {
         listener = new NotificationSampleListener(this);
         listener.attachTaskEndRunnable(new Runnable() {
-            @Override public void run() {
+            @Override
+            public void run() {
                 actionTv.setText(R.string.start);
                 actionView.setTag(null);
             }
@@ -124,7 +131,7 @@ public class NotificationActivity extends BaseSampleActivity {
 
         final Intent intent = new Intent(CancelReceiver.ACTION);
         final PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(this, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         listener.setAction(new NotificationCompat.Action(0, "Cancel", cancelPendingIntent));
         listener.initNotification();
@@ -139,7 +146,8 @@ public class NotificationActivity extends BaseSampleActivity {
             this.task = task;
         }
 
-        @Override public void onReceive(Context context, Intent intent) {
+        @Override
+        public void onReceive(Context context, Intent intent) {
             this.task.cancel();
         }
     }
